@@ -1,0 +1,20 @@
+.DS_Store
+.gradle/
+build/
+out/
+*.class
+*.log
+*.iml
+.idea/
+*.swp
+*.swo
+bin/
+.settings/
+.project
+.classpath
+
+# VS Code
+.vscode/
+
+# Java crash logs
+hs_err_pid*
