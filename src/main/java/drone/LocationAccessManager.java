@@ -9,9 +9,11 @@ class LocationAccessManager {
 
     private final Map<Location, List<Drone>> requests = new LinkedHashMap<>();
     private final DroneComparator droneComparator;
+    private final Simulation simulation; // Simulation instance
 
-    public LocationAccessManager(DroneComparator droneComparator) {
+    public LocationAccessManager(DroneComparator droneComparator, Simulation simulation) {
         this.droneComparator = droneComparator;
+        this.simulation = simulation;
     }
 
     public void initializeRequestMap(Suburb suburb) {
@@ -41,7 +43,7 @@ class LocationAccessManager {
     public void requestAccess(Drone drone, Location location) {
         if (!drone.hasRequestedAccess()) {
             drone.setHasRequestedAccess(true);
-            drone.markAccessWaitStart(Simulation.now());
+            drone.markAccessWaitStart(simulation.now());
             requests.get(location).add(drone);
         }
     }

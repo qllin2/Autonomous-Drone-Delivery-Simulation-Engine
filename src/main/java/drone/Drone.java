@@ -8,6 +8,7 @@ class Drone implements Tickable {
     final Suburb suburb;
     Location location;
     Parcel parcel = null;
+    private final Simulation simulation; // Simulation instance
 
     enum State {
         WaitingForDispatch, TransitToSuburb, TransitToDelivery, Delivering, TransitToExit, TransitToCentre, Recharge
@@ -20,12 +21,13 @@ class Drone implements Tickable {
     private int accessWaitStartTick = -1;
     private MovementStrategy movementStrategy;
 
-    Drone(DispatchCentre dispatchCentre, Suburb suburb) {
+    Drone(DispatchCentre dispatchCentre, Suburb suburb, Simulation simulation) {
         this.dispatchCentre = dispatchCentre;
         this.suburb = suburb;
         this.id = "D" + count++;
         location = null;
-        Simulation.register(this);
+        this.simulation = simulation;
+        simulation.register(this);
     }
 
     public void tick() {
@@ -73,7 +75,7 @@ class Drone implements Tickable {
                     state = State.TransitToExit;
                 } else {
                     location.startDelivery();
-                    Simulation.deliver(parcel);
+                    simulation.deliver(parcel);
                     parcel = null;
                     movementStrategy = new NormalMovementStrategy();
                 }

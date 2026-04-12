@@ -18,3 +18,6 @@ bin/
 
 # Java crash logs
 hs_err_pid*
+
+# Upgrade plan
+UPGRADE_PLAN.md

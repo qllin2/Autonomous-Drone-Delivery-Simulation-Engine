@@ -15,24 +15,26 @@ class DispatchCentre implements Tickable {
     final Set<Drone> drones;
     private final DroneComparator droneComparator;
     private final LocationAccessManager accessManager;
+    private final Simulation simulation;
 
     public boolean someItems() {
         return !waitingForDelivery.isEmpty();
     }
 
-    DispatchCentre(Suburb suburb, int timeToSuburb, int numdrones, int weightThreshold) {
+    DispatchCentre(Suburb suburb, int timeToSuburb, int numdrones, int weightThreshold, Simulation simulation) {
         this.timeToSuburb = timeToSuburb; // Distance away suburb is from dispatch centre
         this.weightThreshold = weightThreshold;
         this.numdrones = numdrones;
-        this.droneComparator = new DefaultDroneComparator();
-        this.accessManager = new LocationAccessManager(droneComparator);
+        this.simulation = simulation;
+        this.droneComparator = new DefaultDroneComparator(simulation);
+        this.accessManager = new LocationAccessManager(droneComparator, simulation);
 
         waitingForDelivery = new LinkedList<>();
         drones = new HashSet<>();
         for (int i = 0; i < numdrones; i++) {
-            drones.add(new Drone(this, suburb));
+            drones.add(new Drone(this, suburb, simulation));
         }
-        Simulation.register(this);
+        simulation.register(this);
 
         accessManager.initializeRequestMap(suburb);
     }
@@ -42,7 +44,7 @@ class DispatchCentre implements Tickable {
             waitingForDelivery.add(parcel);
             String s = "Arrived: " + parcel;
             System.out.println(s);
-            Simulation.logger.logEvent("%5d: %s\n", Simulation.now(), s);
+            simulation.logger.logEvent("%5d: %s\n", simulation.now(), s);
         }
     }
 

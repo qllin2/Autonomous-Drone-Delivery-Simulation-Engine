@@ -8,12 +8,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 class Logger implements Location.Observer {
+
     private static final String POISON_PILL = "__LOGGER_STOP__";
     private final PrintWriter printWriter;
     private final BlockingQueue<String> queue;
     private final Thread writerThread;
+    private final Simulation simulation; // Simulation instance
 
-    Logger(String filename) {
+    Logger(String filename, Simulation simulation) {
+        this.simulation = simulation;
         FileWriter fileWriter;
         try {
             fileWriter = new FileWriter(filename);
@@ -62,7 +65,7 @@ class Logger implements Location.Observer {
 
     @Override
     public void notifyEvent(Location.Id id, String s, Location.DroneEvent e) {
-        enqueue(String.format("%5d: %s %s %s%n", Simulation.now(), id, s, e));
+        enqueue(String.format("%5d: %s %s %s%n", simulation.now(), id, s, e));
     }
 
     public void logEvent(String format, Object... args) {

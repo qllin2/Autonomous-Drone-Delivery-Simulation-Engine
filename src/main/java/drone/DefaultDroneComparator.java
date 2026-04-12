@@ -1,14 +1,20 @@
 package drone;
 
 class DefaultDroneComparator implements DroneComparator {
+
     private static final int AGING_WEIGHT = 3;
     private static final int FRAGILE_BASE = 24;
     private static final int HEAVY_BASE = 8;
     private static final int STARVATION_THRESHOLD_TICKS = 12;
+    private final Simulation simulation; // Simulation instance
+
+    DefaultDroneComparator(Simulation simulation) {
+        this.simulation = simulation;
+    }
 
     @Override
     public int compare(Drone d1, Drone d2) {
-        int nowTick = Simulation.now();
+        int nowTick = simulation.now();
         int wait1 = d1.getAccessWaitTicks(nowTick);
         int wait2 = d2.getAccessWaitTicks(nowTick);
 
