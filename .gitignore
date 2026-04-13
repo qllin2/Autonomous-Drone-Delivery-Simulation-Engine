@@ -4,6 +4,7 @@ build/
 out/
 *.class
 *.log
+logfile.txt
 *.iml
 .idea/
 *.swp
