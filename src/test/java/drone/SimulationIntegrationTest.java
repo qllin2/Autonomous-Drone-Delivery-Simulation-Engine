@@ -17,7 +17,7 @@ class SimulationIntegrationTest {
         Properties props = PropertiesLoader.load("properties/test.properties");
         props.setProperty("logfile", "build/test-output.txt");
         props.setProperty("timeout", "0");
-        new Simulation(props, true).run();
+        new Simulation(props, true, null).run();
 
         String actual = Files.readString(Path.of("build/test-output.txt")).trim();
         String expected = Files.readString(

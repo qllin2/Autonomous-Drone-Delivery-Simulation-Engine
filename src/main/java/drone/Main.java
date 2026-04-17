@@ -17,7 +17,7 @@ public class Main {
         // assert false : "Exceptions are active!";
         String propertiesPath = (args.length > 0) ? args[0] : DEFAULT_PROPERTIES_PATH;
         final Properties properties = loadPropertiesFile(propertiesPath);
-        new Simulation(properties, false).run();
+        new Simulation(properties, false, null).run();
         System.out.println("Finished");
     }
 }

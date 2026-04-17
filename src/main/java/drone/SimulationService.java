@@ -18,6 +18,9 @@ public class SimulationService {
         IDLE, RUNNING, FINISHED
     }
 
+    @Autowired(required = false)
+    private TelemetryPipeline telemetryPipeline;
+
     @Autowired
     private MeterRegistry meterRegistry;
 
@@ -29,7 +32,7 @@ public class SimulationService {
     public CompletableFuture<Void> startSimulation(String scenario) {
         status.set(Status.RUNNING);
         Properties props = PropertiesLoader.load("properties/" + scenario + ".properties");
-        Simulation sim = new Simulation(props, true);
+        Simulation sim = new Simulation(props, true, telemetryPipeline);
         sim.run();
         latestResult = new SimulationResult(
                 sim.deliveredCount,

@@ -47,7 +47,7 @@ class Simulation {
         }
     }
 
-    Simulation(Properties properties, boolean headless) {
+    Simulation(Properties properties, boolean headless, TelemetryPipeline externalPipeline) {
         int seed = Integer.parseInt(properties.getProperty("seed", "30006"));
         this.endArrival = Integer.parseInt(properties.getProperty("parcel.endarrival", "5"));
         int numParcels = Integer.parseInt(properties.getProperty("parcel.parcels", "4"));
@@ -61,8 +61,12 @@ class Simulation {
         timeout = Integer.parseInt(properties.getProperty("timeout", "600"));
         String logfile = properties.getProperty("logfile", "logfile.txt");
 
-        logger = new Logger(logfile, this); // Simulation instance is passed to Logger
-        logger.start();
+        // Falls back to in-memory pipeline when no Kafka profile is active,
+        // so tests and standalone runs work without a live Kafka broker.
+        TelemetryPipeline pipeline = (externalPipeline != null)
+                ? externalPipeline
+                : new InMemoryTelemetryPipeline(logfile);
+        logger = new Logger(pipeline, this); // Simulation instance is passed to Logger
         logger.logEvent("%5d: Simulation parameters - seed=%d\n", now(), seed);
         Random random = new Random(seed);
 
