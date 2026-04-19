@@ -27,13 +27,24 @@ class Simulation {
 
     int deliveredCount = 0;
     int deliveredTotalTime = 0;
+    int totalParcels = 0;
+    int droneCount = 0;
+    int maxDeliveryTime = Integer.MIN_VALUE;
+    int minDeliveryTime = Integer.MAX_VALUE;
 
     public void deliver(Parcel parcel) {
         String s = "Delivered: " + parcel;
         System.out.println(s);
         logger.logEvent("%5d: %s\n", now(), s);;
         deliveredCount++;
-        deliveredTotalTime += now() - parcel.myArrival();
+        int deliveryTime = now() - parcel.myArrival();
+        deliveredTotalTime += deliveryTime;
+        if (deliveryTime > maxDeliveryTime) {
+            maxDeliveryTime = deliveryTime;
+        }
+        if (deliveryTime < minDeliveryTime) {
+            minDeliveryTime = deliveryTime;
+        }
     }
 
     void addToArrivals(int arrivalTime, Parcel item) {
@@ -60,6 +71,8 @@ class Simulation {
         int numdrones = Integer.parseInt(properties.getProperty("drone.number", "1"));
         timeout = Integer.parseInt(properties.getProperty("timeout", "600"));
         String logfile = properties.getProperty("logfile", "logfile.txt");
+        this.droneCount = numdrones;
+        this.totalParcels = numParcels;
 
         // Falls back to in-memory pipeline when no Kafka profile is active,
         // so tests and standalone runs work without a live Kafka broker.

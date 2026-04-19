@@ -35,9 +35,14 @@ public class SimulationService {
         Simulation sim = new Simulation(props, true, telemetryPipeline);
         sim.run();
         latestResult = new SimulationResult(
+                scenario,
                 sim.deliveredCount,
+                sim.totalParcels,
                 sim.deliveredTotalTime,
-                sim.time
+                sim.time,
+                sim.droneCount,
+                sim.maxDeliveryTime,
+                sim.minDeliveryTime
         );
         meterRegistry.counter("simulation.parcels.delivered").increment(sim.deliveredCount);
         Gauge.builder("simulation.last.ticks", sim, s -> s.time).description("total ticks of last simulation run")
